@@ -39,13 +39,13 @@ export function SecondColumn() {
           >
             <div className="node-list-status">
               {node.status}
-              <div />
+              <div style={{ backgroundColor: node.color, width: '60%', height: '10px' }} />
             </div>
             {node.caption}
             <div className="node-list-util">
-              <p>Утилизация cpu: {node.cpu}</p>
-              <p>Утилизация memory: {node.memory}</p>
-              <p>Утилизация disk: {node.disk}</p>
+              <p className={`${node.cpu > 85 ? 'yellow' : ''} ${node.cpu > 95 ? 'red' : ''}`}>Утилизация cpu: {node.cpu}</p>
+              <p className={`${node.memory > 85 ? 'yellow' : ''} ${node.memory > 95 ? 'red' : ''}`}>Утилизация memory: {node.memory}</p>
+              <p className={`${node.disk > 85 ? 'yellow' : ''} ${node.disk > 95 ? 'red' : ''}`}>Утилизация disk: {node.disk}</p>
             </div>
           </button>
         ))}
