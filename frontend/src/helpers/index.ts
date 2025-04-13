@@ -1,6 +1,6 @@
 import {
   AvgUtilization,
-  Colors, Group, RawGroup, RawMetric, Status, Statuses, StructuredGroup,
+  Colors, FormattedNodeData, Group, RawGroup, RawMetric, Status, Statuses, StructuredGroup,
   StructuredMetric,
 } from '../types';
 
@@ -138,4 +138,30 @@ export function getNodeCountByStatus(groups: StructuredGroup[]) : Record<Statuse
     }
   });
   return statusCounts;
+}
+
+export function getFormattedNodeData(
+  groups: StructuredGroup[],
+  metrics: StructuredMetric[],
+) : FormattedNodeData[] {
+  return groups.map((group) => {
+    const nodeMetrics = metrics.filter((metric) => metric.node.id === group.node.id);
+
+    const lastMetric = nodeMetrics.length > 0 ? nodeMetrics.reduce((latest, current) => {
+      const latestDate = new Date(latest.metric.datetime);
+      const currentDate = new Date(current.metric.datetime);
+      return currentDate > latestDate ? current : latest;
+    }, nodeMetrics[0]) : null;
+
+    return {
+      id: group.node.id,
+      groupId: group.group.id,
+      status: group.node.status.description,
+      color: group.node.status.color,
+      caption: group.node.caption,
+      cpu: lastMetric?.metric.cpu ?? 0,
+      memory: lastMetric?.metric.memory ?? 0,
+      disk: lastMetric?.metric.disk ?? 0,
+    };
+  });
 }

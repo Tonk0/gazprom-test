@@ -4,10 +4,11 @@ import { fetchGroups, fetchMetrics } from './helpers/api';
 import { FirstColumn } from './components/FirstColumn';
 import { useGroupStore } from './store/groupStore';
 import { useMetricStore } from './store/metricStore';
+import { SecondColumn } from './components/SecondColumn';
 
 function App() {
   const { data: groups } = useQuery({ queryKey: ['groups'], queryFn: fetchGroups, refetchInterval: 60000 });
-  const { data: metrics } = useQuery({ queryKey: ['metrics'], queryFn: fetchMetrics, refetchInterval: 60000 })
+  const { data: metrics } = useQuery({ queryKey: ['metrics'], queryFn: fetchMetrics, refetchInterval: 60000 });
   const { setGroups } = useGroupStore.getState();
   const { setMetrics } = useMetricStore.getState();
   useEffect(() => {
@@ -20,13 +21,11 @@ function App() {
     if (metrics) {
       setMetrics(metrics);
     }
-  }, [metrics, setMetrics])
+  }, [metrics, setMetrics]);
   return (
     <div className="grid-layout">
       <FirstColumn />
-      <div className="first-column">
-        {}
-      </div>
+      <SecondColumn />
       <div className="first-column">
         {}
       </div>

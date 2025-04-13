@@ -113,3 +113,14 @@ export interface AvgUtilization {
   averageMemory: number;
   averageDisk: number;
 }
+
+export interface FormattedNodeData {
+  id: number;
+  status: Statuses;
+  color: Colors;
+  caption: string;
+  cpu: number;
+  memory: number;
+  disk: number;
+  groupId: number;
+}

@@ -15,7 +15,9 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
-
+.column-wrapper{
+  border-right: 1px solid black;
+}
 .status {
   display: flex;
   align-items: center;
@@ -51,12 +53,6 @@ body {
   padding-left: 12px;
 }
 
-.groups button.gray {
-  background-color: #F0F0F0;
-}
-.groups button.selected {
-  background-color: #00f6ff;
-}
 
 .details {
   margin-top: 12px;
@@ -68,4 +64,38 @@ body {
 .details-statuses {
   margin-top: 4px;
   padding-left: 12px;
+}
+
+
+.node-list {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
+}
+.node-list button {
+  flex-shrink: 0;
+  border: none;
+  background-color: transparent;
+  height: 58px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.node-list-status {
+  width: 20%;
+}
+.node-list-util {
+  width: 40%;
+  text-align: left;
+}
+button.gray {
+  background-color: #F0F0F0;
+}
+button.selected {
+  background-color: #00f6ff;
+}
+button.all {
+  display: block;
 }
