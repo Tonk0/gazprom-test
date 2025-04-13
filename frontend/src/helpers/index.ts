@@ -162,6 +162,171 @@ export function getFormattedNodeData(
       cpu: lastMetric?.metric.cpu ?? 0,
       memory: lastMetric?.metric.memory ?? 0,
       disk: lastMetric?.metric.disk ?? 0,
+      admin: group.node.admin,
+      application: group.node.application,
+      interface: group.node.interface,
     };
   });
+}
+
+export interface ChartDataset {
+  label: string;
+  data: number[];
+  borderColor?: string;
+  backgroundColor?: string;
+}
+
+export interface ChartData {
+  labels: string[];
+  datasets: ChartDataset[];
+}
+
+export function prepareUtilizationChartData(
+  groups: StructuredGroup[],
+  metrics: StructuredMetric[],
+): ChartData {
+  const nodeIds = groups.map((group) => group.node.id);
+  const relevantMetrics = metrics.filter((metric) => nodeIds.includes(metric.node.id));
+
+  if (relevantMetrics.length === 0) {
+    return {
+      labels: [],
+      datasets: [
+        { label: 'CPU', data: [] },
+        { label: 'Memory', data: [] },
+        { label: 'Disk', data: [] },
+      ],
+    };
+  }
+
+  // Группируем метрики по времени
+  const metricsByTime: { [datetime: string]: StructuredMetric[] } = {};
+  relevantMetrics.forEach((metric) => {
+    const { datetime } = metric.metric;
+    if (!metricsByTime[datetime]) {
+      metricsByTime[datetime] = [];
+    }
+    metricsByTime[datetime].push(metric);
+  });
+
+  // Сортируем временные метки
+  const sortedTimes = Object.keys(metricsByTime)
+    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+  const cpuData: number[] = [];
+  const memoryData: number[] = [];
+  const diskData: number[] = [];
+
+  sortedTimes.forEach((time) => {
+    const timeMetrics = metricsByTime[time];
+    const totalCpu = timeMetrics.reduce((sum, metric) => sum + metric.metric.cpu, 0);
+    const totalMemory = timeMetrics.reduce((sum, metric) => sum + metric.metric.memory, 0);
+    const totalDisk = timeMetrics.reduce((sum, metric) => sum + metric.metric.disk, 0);
+
+    const avgCpu = Math.round((totalCpu / timeMetrics.length) * 100) / 100;
+    const avgMemory = Math.round((totalMemory / timeMetrics.length) * 100) / 100;
+    const avgDisk = Math.round((totalDisk / timeMetrics.length) * 100) / 100;
+
+    cpuData.push(avgCpu);
+    memoryData.push(avgMemory);
+    diskData.push(avgDisk);
+  });
+
+  // Форматируем даты для отображения на графике
+  const formattedLabels = sortedTimes.map((time) => new Date(time).toLocaleString());
+
+  return {
+    labels: formattedLabels,
+    datasets: [
+      {
+        label: 'CPU',
+        data: cpuData,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      },
+      {
+        label: 'Memory',
+        data: memoryData,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      },
+      {
+        label: 'Disk',
+        data: diskData,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      },
+    ],
+  };
+}
+
+export function prepareNodeUtilizationChartData(
+  nodeId: number,
+  metrics: StructuredMetric[],
+): ChartData {
+  const nodeMetrics = metrics.filter((metric) => metric.node.id === nodeId);
+
+  if (nodeMetrics.length === 0) {
+    return {
+      labels: [],
+      datasets: [
+        { label: 'CPU', data: [] },
+        { label: 'Memory', data: [] },
+        { label: 'Disk', data: [] },
+      ],
+    };
+  }
+
+  const metricsByTime: { [datetime: string]: StructuredMetric[] } = {};
+  nodeMetrics.forEach((metric) => {
+    const { datetime } = metric.metric;
+    if (!metricsByTime[datetime]) {
+      metricsByTime[datetime] = [];
+    }
+    metricsByTime[datetime].push(metric);
+  });
+
+  const sortedTimes = Object.keys(metricsByTime)
+    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+  // Здесь не нужно вычислять среднее, так как у нас только одна нода
+  const cpuData: number[] = [];
+  const memoryData: number[] = [];
+  const diskData: number[] = [];
+
+  sortedTimes.forEach((time) => {
+  // Берем первую метрику для каждой временной точки
+  // (должна быть всего одна для ноды в каждый момент)
+    const metric = metricsByTime[time][0];
+
+    cpuData.push(metric.metric.cpu);
+    memoryData.push(metric.metric.memory);
+    diskData.push(metric.metric.disk);
+  });
+
+  const formattedLabels = sortedTimes.map((time) => new Date(time).toLocaleString());
+
+  return {
+    labels: formattedLabels,
+    datasets: [
+      {
+        label: 'CPU',
+        data: cpuData,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      },
+      {
+        label: 'Memory',
+        data: memoryData,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      },
+      {
+        label: 'Disk',
+        data: diskData,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      },
+    ],
+  };
 }

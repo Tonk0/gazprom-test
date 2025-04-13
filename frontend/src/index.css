@@ -109,3 +109,27 @@ button.all {
 .node-list p.red {
   background-color: red;
 }
+
+.third h3 {
+  margin-top: 12px;
+  margin-left: 12px;
+}
+
+.interface {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: 12px;
+}
+.interface div {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.admin {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: 12px;
+}

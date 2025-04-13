@@ -123,4 +123,7 @@ export interface FormattedNodeData {
   memory: number;
   disk: number;
   groupId: number;
+  interface: Interface;
+  admin: Admin;
+  application: Application;
 }
