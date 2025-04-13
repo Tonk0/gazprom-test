@@ -17,9 +17,11 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     'react/react-in-jsx-scope':'off',
+    'react/jsx-one-expression-per-line': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
     ],
+    'import/prefer-default-export': 'off'
   },
 }

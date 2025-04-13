@@ -1,0 +1,71 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  font-family: "Montserrat", sans-serif;
+  box-sizing: border-box;
+}
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 12px;
+  padding-top: 12px;
+}
+.status-rect {
+  width: 16px;
+  height: 16px;
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+}
+.groups h3 {
+  padding-left: 12px;
+}
+.groups-button-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.groups button {
+  border: none;
+  background-color: transparent;
+  text-align: left;
+  height: 32px;
+  cursor: pointer;
+  padding-left: 12px;
+}
+
+.groups button.gray {
+  background-color: #F0F0F0;
+}
+.groups button.selected {
+  background-color: #00f6ff;
+}
+
+.details {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  padding-left: 12px;
+  gap: 8px;
+}
+.details-statuses {
+  margin-top: 4px;
+  padding-left: 12px;
+}
